@@ -55,7 +55,6 @@ public class ProductService {
             product.setCategory(productDetails.getCategory());
             product.setManufacturer(productDetails.getManufacturer());
             product.setWarrantyPeriod(productDetails.getWarrantyPeriod());
-            product.setRating(productDetails.getRating());
             
             // If image is updated, save the new image
             if (imageFile != null) {

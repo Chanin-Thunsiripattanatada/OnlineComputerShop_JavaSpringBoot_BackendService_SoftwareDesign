@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +24,6 @@ import com.cp.kku.demo.model.User;
 import com.cp.kku.demo.service.CustomerService;
 import com.cp.kku.demo.service.OrderService;
 import com.cp.kku.demo.service.UserService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -47,9 +45,16 @@ public class OrderController {
     }
 
     @GetMapping("/user/orders/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable("id") int id) {
+    public ResponseEntity<?> getOrderById(@PathVariable("id") int id,Principal principal) {
         Order order = orderService.getOrderById(id);
-        return new ResponseEntity<>(order, HttpStatus.OK);
+        Customer customer = order.getCustomer();
+        User user = userService.findByUsername(principal.getName()).get();
+        if (user == customer.getUser()) {
+            
+            return new ResponseEntity<>(order, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("userID != CustomerID", HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/user/orders/customer/{id}")
@@ -70,7 +75,6 @@ public class OrderController {
         List<OrderItem> orderItems = orderService.getOrderItemsByOrderId(id);
         return new ResponseEntity<>(orderItems, HttpStatus.OK);
     }
-
 
     @SuppressWarnings("null")
     @PutMapping("/user/orders/{id}") // update

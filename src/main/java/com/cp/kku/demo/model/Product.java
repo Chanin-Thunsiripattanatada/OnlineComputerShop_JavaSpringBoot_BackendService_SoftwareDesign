@@ -36,14 +36,12 @@ public class Product {
     @JoinColumn(name = "image_id",nullable = false,referencedColumnName = "id")
     private Image image;
 
-    @Column
-    private double rating;
 
     public Product(){
         super();
     }
     public Product(int productId, String name, String description, double price, int stockQuantity, Category category,
-            String manufacturer, int warrantyPeriod, Image imageid, double rating) {
+            String manufacturer, int warrantyPeriod, Image imageid) {
         this.productId = productId;
         this.name = name;
         this.description = description;
@@ -53,7 +51,6 @@ public class Product {
         this.manufacturer = manufacturer;
         this.warrantyPeriod = warrantyPeriod;
         this.image = imageid;
-        this.rating = rating;
     }
 
     public int getProductId() {
@@ -128,13 +125,6 @@ public class Product {
         this.image = image;
     }
 
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
     
 }
 
