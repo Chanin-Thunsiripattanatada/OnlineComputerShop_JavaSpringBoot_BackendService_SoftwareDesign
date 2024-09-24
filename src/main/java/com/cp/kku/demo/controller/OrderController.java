@@ -71,44 +71,7 @@ public class OrderController {
         return new ResponseEntity<>(orderItems, HttpStatus.OK);
     }
 
-    @SuppressWarnings("null")
-    @PostMapping("/user/orders")
-    public ResponseEntity<Order> addNewOrder(
-            @RequestParam("order") String orderJson,
-            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Order order = objectMapper.readValue(orderJson, Order.class);
-            order.setOrderDate(LocalDateTime.now());
-            Order createdOrder = orderService.saveOrder(order, imageFile);
-            return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
-        } catch (IOException e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    // @SuppressWarnings("null")
-    // @PutMapping("/user/orders/{id}") // update
-    // public ResponseEntity<?> updateOrder(
-    // @PathVariable("id") int orderId,
-    // @RequestPart("order") String orderJson,
-    // @RequestPart(value = "imageFile", required = false) MultipartFile imageFile)
-    // {
-
-    // try {
-    // ObjectMapper objectMapper = new ObjectMapper();
-    // Order orderDetails = objectMapper.readValue(orderJson, Order.class);
-    // Order updatedOrder = orderService.updateOrder(orderId, orderDetails,
-    // imageFile);
-    // if (updatedOrder != null) {
-    // return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
-    // } else {
-    // return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-    // }
-    // } catch (IOException e) {
-    // return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // }
     @SuppressWarnings("null")
     @PutMapping("/user/orders/{id}") // update
     public ResponseEntity<?> updateOrder(
@@ -116,8 +79,8 @@ public class OrderController {
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
         try {
             Order order = orderService.getOrderById(orderId);
-            order.setStatus("กำลังตรวจสอบ");
-            order.setShippingStatus("กำลังตรวจสอบ");
+            order.setStatus("under-review");
+            order.setShippingStatus("not-shipped");
             Order updatedOrder = orderService.updateOrder(orderId, order, imageFile);
             if (updatedOrder != null) {
                 return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
@@ -134,7 +97,8 @@ public class OrderController {
         User user = userService.findByUsername(principal.getName()).get();
         Customer customer = customerService.getCustomerByUserId(user.getId());
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("รอการยืนยัน");
+        order.setStatus("pending-confirmation");
+        order.setShippingStatus("not-shipped");
         if (order.getCustomer().getCustomerId() == customer.getCustomerId()) {
             Order savedOrder = orderService.saveOrder(order);
             return ResponseEntity.ok(savedOrder);

@@ -8,10 +8,12 @@ import java.io.IOException;
 import com.cp.kku.demo.controller.WebSocketOrderController;
 import com.cp.kku.demo.model.Customer;
 import com.cp.kku.demo.model.PrivateImage;
+import com.cp.kku.demo.model.Product;
 import com.cp.kku.demo.model.Order;
 import com.cp.kku.demo.model.OrderItem;
 import com.cp.kku.demo.repository.OrderRepository;
 import com.cp.kku.demo.repository.PrivateImageRepository;
+import com.cp.kku.demo.repository.ProductRepository;
 import com.cp.kku.demo.util.ImageUtils;
 
 import java.util.List;
@@ -24,6 +26,8 @@ public class OrderService {
 
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private PrivateImageRepository privateImageRepository;
 
@@ -109,6 +113,7 @@ public class OrderService {
     public Order updateOrder(int id, Order order) {
         // Retrieve the existing order
         Order existingOrder = orderRepository.findById(id).get();
+        boolean statusChangedToPaid = !existingOrder.getStatus().equals("paid") && order.getStatus().equals("paid");
 
         // Update fields
         existingOrder.setCustomer(order.getCustomer());
@@ -125,9 +130,24 @@ public class OrderService {
             webSocketOrderController.sendOrderNotification(updatedOrder,
                     "Order Status Updated to " + updatedOrder.getShippingStatus());
         }
+        if (statusChangedToPaid) {
+            reduceStock(existingOrder); // Reduce stock based on order items
+        }
 
         // Save the updated order
         return updatedOrder;
+    }
+
+     private void reduceStock(Order order) {
+        for (OrderItem orderItem : order.getOrderItems()) {
+            Product product = orderItem.getProduct();
+            int newStockQuantity = product.getStockQuantity() - orderItem.getQuantity();
+            if (newStockQuantity < 0) {
+                throw new IllegalStateException("Not enough stock for product: " + product.getName());
+            }
+            product.setStockQuantity(newStockQuantity);
+            productRepository.save(product); // Save the updated product with new stock level
+        }
     }
 
     public void deleteOrder(int id) {
