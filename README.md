@@ -28,6 +28,13 @@
 วิทยาลัยการคอมพิวเตอร์  
 มหาวิทยาลัยขอนแก่น
 
+---
+# เอกสารและ Project ที่เกี่ยวข้อง
+
+- **[เอกสารประกอบ แสดง UI](https://drive.google.com/file/d/1m7j29N3fYfIUwgqnI5ZWXauAB3YTs5XB/view?usp=sharing)**  
+- **[เว็ปหน้าร้านระบบขายอุปกรณ์คอมพิวเตอร์ออนไลน์](https://github.com/Chanin-Thunsiripattanatada/EcommerceWebsite_OnlineComputerShop_ReactRedux_SoftwareDesign)**  
+- **[เว็ปแอดมินระบบขายอุปกรณ์คอมพิวเตอร์ออนไลน์](https://github.com/Chanin-Thunsiripattanatada/AdminSystem_OnlineComputerShop_ReactRedux_SoftwareDesign)**  
+---
 ระบบนี้เป็น **ระบบขายอุปกรณ์คอมพิวเตอร์ออนไลน์** ที่ช่วยจัดการข้อมูลสำคัญ เช่น การขายสินค้า การสั่งซื้อ รายการสินค้า และข้อมูลลูกค้า โดยรองรับการอัปโหลดหลักฐานการชำระเงินผ่านการโอนเงิน ระบบมีการกำหนดสิทธิ์การเข้าถึงข้อมูลลูกค้าอย่างปลอดภัยด้วย **Bearer Token** ซึ่งใช้ข้อมูลของผู้ใช้งาน (User) เพื่อตรวจสอบบทบาท (**Role**) และมีการใช้ **Principal** ใน **Java Spring Boot** สำหรับการ Query ข้อมูล เพื่อป้องกันการเข้าถึงข้อมูลส่วนตัวของลูกค้าโดยไม่ได้รับอนุญาต
 
 
